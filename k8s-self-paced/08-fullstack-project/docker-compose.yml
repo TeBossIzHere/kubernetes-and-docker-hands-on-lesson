@@ -1,0 +1,24 @@
+services:
+  frontend:
+    build: ./frontend
+    container_name: fullstack-frontend
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend
+
+  backend:
+    build: ./backend
+    container_name: fullstack-backend
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - APP_ENV=compose
+    ports:
+      - "5001:5001"
+    depends_on:
+      - redis
+
+  redis:
+    image: redis:7-alpine
+    container_name: fullstack-redis

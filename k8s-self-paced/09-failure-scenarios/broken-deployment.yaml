@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: broken-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: broken-app
+  template:
+    metadata:
+      labels:
+        app: broken-app
+    spec:
+      containers:
+        - name: broken-app
+          image: docker-k8s-lab:not-a-real-tag # invalid image tag
+          command: ["python", "-c", "import sys; sys.exit(1)"] # CrashLoopBackOff
+          ports:
+            - containerPort: 5000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: broken-service
+spec:
+  selector:
+    app: wrong-label # mismatched selector on purpose
+  ports:
+    - port: 80
+      targetPort: 5000

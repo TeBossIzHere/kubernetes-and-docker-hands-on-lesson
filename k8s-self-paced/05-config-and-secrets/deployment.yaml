@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: configured-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: configured-app
+  template:
+    metadata:
+      labels:
+        app: configured-app
+    spec:
+      containers:
+        - name: configured-app
+          image: docker-k8s-lab:v1
+          ports:
+            - containerPort: 5000
+          envFrom:
+            - configMapRef:
+                name: app-config
+            - secretRef:
+                name: app-secret
